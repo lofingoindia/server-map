@@ -11,24 +11,39 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "*",
-    methods: ["*"],
+    origin: ["*", "https://admin.lofingo.store", "https://sellerweb.lofingo.store", "http://localhost:3000", "http://localhost:5173"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"],
     allowedHeaders: ["*"],
-    credentials: true
+    credentials: true,
+    transports: ['websocket', 'polling']
   }
 });
 
 const PORT = 5002;
 
-// Middleware - Allow all origins and methods
+// Middleware - Allow all origins and methods with specific domains
 app.use(cors({
-  origin: "*",
+  origin: ["*", "https://admin.lofingo.store", "https://sellerweb.lofingo.store", "http://localhost:3000", "http://localhost:5173"],
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"],
-  allowedHeaders: ["*"],
+  allowedHeaders: ["*", "Content-Type", "Authorization", "X-Requested-With", "Accept", "Origin"],
   credentials: true,
   preflightContinue: false,
   optionsSuccessStatus: 200
 }));
+
+// Add specific headers for CORS
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD');
+  res.header('Access-Control-Allow-Headers', '*');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
