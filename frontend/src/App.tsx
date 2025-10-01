@@ -73,7 +73,7 @@ interface Alert {
   timestamp: string;
 }
 
-const SERVER_URL = 'https://72.60.193.120:5002';
+const SERVER_URL = 'https://sellerweb.lofingo.store';
 
 function App() {
   const [socket, setSocket] = useState<Socket | null>(null);

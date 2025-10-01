@@ -12,15 +12,25 @@ const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
     origin: "*",
-    methods: ["GET", "POST"]
+    methods: ["*"],
+    allowedHeaders: ["*"],
+    credentials: true
   }
 });
 
 const PORT = 5002;
 
-// Middleware
-app.use(cors());
+// Middleware - Allow all origins and methods
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"],
+  allowedHeaders: ["*"],
+  credentials: true,
+  preflightContinue: false,
+  optionsSuccessStatus: 200
+}));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Store connected clients
 let connectedClients = new Set();
